@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: demo-service-alerts
+  namespace: monitoring
+  labels:
+    release: observa
+spec:
+  groups:
+    - name: demo-service.rules
+      rules:
+        - alert: DemoServiceHighErrorRate
+          expr: |
+            (
+              sum(rate(demo_http_errors_total[5m])) / sum(rate(demo_http_request_duration_seconds_count[5m]))
+            ) > 0.01
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High error rate on demo service"
+            description: "More than 1% of requests are failing for 2 minutes."
+
+        - alert: DemoServiceHighLatency
+          expr: |
+            histogram_quantile(
+              0.95,
+              sum(rate(demo_http_request_duration_seconds_bucket[5m])) by (le)
+            ) > 1
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High latency on demo service."
+            description: "P95 latency is above 1 second for 2 minutes."
