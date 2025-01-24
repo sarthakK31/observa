@@ -1,0 +1,40 @@
+config:
+  enabled: true
+
+  clients:
+    - url: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
+
+  snippets:
+    scrapeConfigs: |
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+
+        pipeline_stages:
+          - tenant:
+              value: demo
+
+        relabel_configs:
+          # Only keep logs from default namespace
+          - source_labels: [__meta_kubernetes_namespace]
+            action: keep
+            regex: default
+
+          # App label
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: app
+
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+
+          - source_labels: [__meta_kubernetes_container_name]
+            target_label: container
+
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+
+          # REQUIRED: map pod → log file path
+          - source_labels: [__meta_kubernetes_pod_uid, __meta_kubernetes_container_name]
+            separator: /
+            target_label: __path__
+            replacement: /var/log/pods/*$1/*.log

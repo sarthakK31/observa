@@ -60,5 +60,5 @@ The goal is to page only when the users are experiencing some issue/pain.
 3. P95 latency reflects tail-user experience. 
 
 
-
-
+## Reliability and Incident Response
+This project inclused simulated production incidents to validate alerting autoscaling and SLO behaviour. Each incident isdocumented with detection, root cause and lessons learned to reflect real world SRE workflows.
