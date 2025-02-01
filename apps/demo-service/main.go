@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 	"math/rand"
+	"log"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -36,21 +37,24 @@ func main() {
 	prometheus.MustRegister(httpDuration, httpErrors)
 
 	http.Handle("/", instrument("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("home page requested here")
 		w.Write([]byte("ok\n"))
 	}))
 
 	http.Handle("/slow", instrument("/slow", func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(500+rand.Intn(1000)) * time.Millisecond)
+		log.Printf("slow request end")
 		w.Write([]byte("slow response\n"))
 	}))
 
 	http.Handle("/error", instrument("/error", func(w http.ResponseWriter, r *http.Request) {
+	        log.Printf("error simulation endpoint hit")
 		httpErrors.WithLabelValues("/error").Inc()
 		http.Error(w, "error", http.StatusInternalServerError)
 	}))
 
 	http.Handle("/metrics", promhttp.Handler())
-
+	
 	http.ListenAndServe(":8080", nil)
 }
 
