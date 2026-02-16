@@ -329,10 +329,7 @@ docker system prune -a
 **Built to simulate real SRE incident response workflows on Kubernetes using SLO-driven observability principles.**
 
 **Please view the following link for checking the project-screenshots**
-** **
+**https://github.com/sarthakK31/observa/tree/main/project-screenshots**
 
-### **Here is a video demo of the project in action**
-<video width="640" height="480" controls>
-  <source src="project-screenshots/workflow-demo.webm" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+### **Here is a video demo of the project in action** (Please click the image to open the Youtube link.)
+[![VIDEO DEMO](https://img.youtube.com/vi/9tS0pRZYLdw/0.jpg)](https://www.youtube.com/watch?v=9tS0pRZYLdw)
